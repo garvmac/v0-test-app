@@ -27,6 +27,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { ArrowLeft, Trash2 } from 'lucide-react'
+import { TaskComments } from './task-comments'
 
 interface TaskDetailProps {
   initialTask: Task
@@ -191,6 +192,8 @@ export function TaskDetail({ initialTask }: TaskDetailProps) {
             </div>
           </CardContent>
         </Card>
+
+        <TaskComments taskId={task.id} />
       </div>
     </div>
   )
