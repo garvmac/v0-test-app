@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import { Comment } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Trash2, MessageSquare } from 'lucide-react'
 
 interface TaskCommentsProps {
@@ -80,14 +79,12 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
   }
 
   return (
-    <Card className="mt-6">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg flex items-center gap-2">
-          <MessageSquare className="h-5 w-5" />
-          Comments ({comments.length})
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <div className="border-t pt-6 mt-6">
+      <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+        <MessageSquare className="h-5 w-5" />
+        Comments ({comments.length})
+      </h3>
+      <div className="space-y-4">
         {isLoading ? (
           <p className="text-sm text-muted-foreground">Loading comments...</p>
         ) : (
@@ -115,7 +112,7 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-3 pt-2">
+            <form onSubmit={handleSubmit} className="rounded-lg bg-muted/50 p-3 space-y-3">
               <Textarea
                 placeholder="Add a comment..."
                 value={newComment}
@@ -123,13 +120,15 @@ export function TaskComments({ taskId }: TaskCommentsProps) {
                 rows={2}
               />
               {error && <p className="text-sm text-destructive">{error}</p>}
-              <Button type="submit" size="sm" disabled={isSubmitting || !newComment.trim()}>
-                {isSubmitting ? 'Adding...' : 'Add Comment'}
-              </Button>
+              <div className="flex justify-end">
+                <Button type="submit" size="sm" disabled={isSubmitting || !newComment.trim()}>
+                  {isSubmitting ? 'Adding...' : 'Add Comment'}
+                </Button>
+              </div>
             </form>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
