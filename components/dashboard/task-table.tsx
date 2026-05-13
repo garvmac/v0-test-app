@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Task, TaskStatus, TaskPriority } from '@/lib/types'
 import { Button } from '@/components/ui/button'
@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Plus, Search } from 'lucide-react'
+import { Plus, Search, PlayCircle, CheckCircle2, RotateCcw } from 'lucide-react'
 import { TaskFormModal } from './task-form-modal'
 
 interface TaskTableProps {
@@ -58,10 +58,25 @@ export function TaskTable({
   const router = useRouter()
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
 
-  const nextStatus: Record<TaskStatus, { status: TaskStatus; label: string }> = {
-    todo: { status: 'in_progress', label: 'Start' },
-    in_progress: { status: 'completed', label: 'Complete' },
-    completed: { status: 'in_progress', label: 'Reopen' },
+  const nextStatus: Record<TaskStatus, { status: TaskStatus; label: string; icon: React.ReactNode; className: string }> = {
+    todo: {
+      status: 'in_progress',
+      label: 'Start',
+      icon: <PlayCircle className="h-3.5 w-3.5" />,
+      className: 'text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 dark:text-amber-400 dark:bg-amber-900/30 dark:hover:bg-amber-900/50 dark:border-amber-800',
+    },
+    in_progress: {
+      status: 'completed',
+      label: 'Mark Complete',
+      icon: <CheckCircle2 className="h-3.5 w-3.5" />,
+      className: 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 dark:text-emerald-400 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50 dark:border-emerald-800',
+    },
+    completed: {
+      status: 'in_progress',
+      label: 'Reopen',
+      icon: <RotateCcw className="h-3.5 w-3.5" />,
+      className: 'text-muted-foreground bg-muted hover:bg-muted/80 border border-border',
+    },
   }
 
   const handleAdvanceStatus = async (e: React.MouseEvent, task: Task) => {
@@ -133,27 +148,24 @@ export function TaskTable({
                             {task.description}
                           </p>
                         )}
-                        <div className="flex items-center justify-between mt-2">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <Badge variant="secondary" className={`text-xs ${priorityColors[task.priority]}`}>
-                              {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                            </Badge>
-                            {task.due_date && (
-                              <span className={`text-xs ${isOverdue(task) ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
-                                {formatDate(task.due_date)}
-                                {isOverdue(task) && ' (Overdue)'}
-                              </span>
-                            )}
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 px-2 text-xs text-muted-foreground hover:text-foreground"
-                            onClick={(e) => handleAdvanceStatus(e, task)}
-                          >
-                            {nextStatus[task.status].label}
-                          </Button>
+                        <div className="flex items-center gap-2 flex-wrap mt-2">
+                          <Badge variant="secondary" className={`text-xs ${priorityColors[task.priority]}`}>
+                            {task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
+                          </Badge>
+                          {task.due_date && (
+                            <span className={`text-xs ${isOverdue(task) ? 'text-destructive font-medium' : 'text-muted-foreground'}`}>
+                              {formatDate(task.due_date)}
+                              {isOverdue(task) && ' (Overdue)'}
+                            </span>
+                          )}
                         </div>
+                        <button
+                          className={`mt-2 w-full flex items-center justify-center gap-1.5 rounded-sm px-2 py-1.5 text-xs font-medium transition-colors ${nextStatus[task.status].className}`}
+                          onClick={(e) => handleAdvanceStatus(e, task)}
+                        >
+                          {nextStatus[task.status].icon}
+                          {nextStatus[task.status].label}
+                        </button>
                       </div>
                     ))
                   )}
