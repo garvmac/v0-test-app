@@ -29,12 +29,14 @@ import {
 import { ArrowLeft, Trash2 } from 'lucide-react'
 import { TaskComments } from './task-comments'
 import { TaskActivityLog } from './task-activity'
+import { TaskSidebar } from './task-sidebar'
 
 interface TaskDetailProps {
   initialTask: Task
+  allTasks: Task[]
 }
 
-export function TaskDetail({ initialTask }: TaskDetailProps) {
+export function TaskDetail({ initialTask, allTasks }: TaskDetailProps) {
   const router = useRouter()
   const [task, setTask] = useState(initialTask)
   const [isSaving, setIsSaving] = useState(false)
@@ -121,8 +123,13 @@ export function TaskDetail({ initialTask }: TaskDetailProps) {
 
   return (
     <div className="min-h-screen bg-muted/30">
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_280px] gap-4">
+        <Card className="h-fit">
+          <CardContent className="pt-6">
+            <TaskSidebar tasks={allTasks} currentTaskId={task.id} />
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader className="pb-2">
             <Button variant="ghost" size="icon" className="w-fit -ml-2 -mt-2 mb-2" onClick={() => router.push('/dashboard')}>

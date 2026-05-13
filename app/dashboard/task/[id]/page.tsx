@@ -11,16 +11,14 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
     redirect('/auth/login')
   }
 
-  const { data: task } = await supabase
-    .from('tasks')
-    .select('*')
-    .eq('id', id)
-    .eq('user_id', user.id)
-    .single()
+  const [{ data: task }, { data: allTasks }] = await Promise.all([
+    supabase.from('tasks').select('*').eq('id', id).eq('user_id', user.id).single(),
+    supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+  ])
 
   if (!task) {
     redirect('/dashboard')
   }
 
-  return <TaskDetail initialTask={task} />
+  return <TaskDetail initialTask={task} allTasks={allTasks || []} />
 }
